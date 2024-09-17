@@ -47,32 +47,33 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
 FROM base AS mesa
 
 RUN apk add --no-cache \
-    meson \
-    ninja \
+    clang-dev \
+    cmake \
+    git \
     glib-dev \
     libdrm-dev \
+    libva-vdpau-driver \
+    libx11 \
+    libx11-dev \
+    libxdamage-dev \
+    libxext-dev \
+    libxfixes-dev \
+    libxml2-dev \
+    libxshmfence-dev \
     llvm-dev \
     mesa-dev \
-    mesa-gl \
-    mesa-gbm \
-    mesa-glapi \
     mesa-egl \
+    mesa-gbm \
+    mesa-gl \
+    mesa-glapi \
     mesa-gles \
     mesa-va-gallium \
+    meson \
+    ninja \
     wayland-protocols-dev \
-    libx11-dev \
-    libx11 \
-    libxext-dev \
-    libxdamage-dev \
-    libxfixes-dev \
-    libxshmfence-dev \
-    zlib-dev \
-    xz-dev \
     xorg-server-dev \
-    clang-dev \
-    libxml2-dev \
-    git \
-    cmake
+    xz-dev \
+    zlib-dev
 
 RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
     cd /tmp/libglvnd && \
