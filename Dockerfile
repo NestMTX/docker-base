@@ -78,10 +78,8 @@ RUN apk add --no-cache \
     xorg-server-dev \
     xz-dev \
     zlib-dev \
-    libvdpau-dev
-
-# Install Python mako module
-RUN pip install mako
+    libvdpau-dev \
+    py3-mako
 
 # Install libglvnd
 RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
