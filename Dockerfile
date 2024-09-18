@@ -47,13 +47,23 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
 ##################################################
 FROM base AS mesa
 
-# Install additional dependencies including the Python mako module
+RUN apk add --no-cache git
+
+RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
+    git clone https://gitlab.freedesktop.org/mesa/mesa.git /tmp/mesa
+
+# Install additional dependencies
 RUN apk add --no-cache \
+    ca-certificates \
+    binutils \
+    bison \
     clang-dev \
     cmake \
-    git \
+    elfutils-dev \
+    flex \
     glib-dev \
     glslang \
+    gcompat \
     libclc-dev \
     libdrm-dev \
     libva-vdpau-driver \
@@ -65,6 +75,9 @@ RUN apk add --no-cache \
     libxml2-dev \
     libxshmfence-dev \
     llvm-dev \
+    libxrandr-dev \
+    lua5.3 \
+    spirv-llvm-translator-dev \
     mesa-dev \
     mesa-egl \
     mesa-gbm \
@@ -79,18 +92,26 @@ RUN apk add --no-cache \
     xz-dev \
     zlib-dev \
     libvdpau-dev \
-    py3-mako
+    py3-cparser \
+    py3-mako \
+    py3-yaml \
+    valgrind \
+    wget \
+    wayland-dev \
+    xrandr
+
+# RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && \
+#     apk add glibc-2.28-r0.apk
 
 # Install libglvnd
-RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
-    cd /tmp/libglvnd && \
+RUN cd /tmp/libglvnd && \
     meson builddir --prefix=/usr && \
     ninja -C builddir/ install && \
     rm -rf /tmp/libglvnd
 
 # Install Mesa
-RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git /tmp/mesa && \
-    cd /tmp/mesa && \
+RUN cd /tmp/mesa && \
     meson setup builddir/ --prefix=/usr && \
     ninja -C builddir/ && \
     ninja -C builddir/ install && \
