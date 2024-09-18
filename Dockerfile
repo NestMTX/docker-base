@@ -43,41 +43,11 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
     make
 
 ##################################################
-# Install Mesa with VDPAU support
+# Install Mesa and Vulkan
 ##################################################
 FROM base AS mesa
 
-RUN apk add --no-cache git
-
-RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
-    git clone https://gitlab.freedesktop.org/mesa/mesa.git /tmp/mesa
-
-# Install additional dependencies
-RUN apk add --no-cache \
-    ca-certificates \
-    binutils \
-    bison \
-    clang-dev \
-    cmake \
-    elfutils-dev \
-    flex \
-    glib-dev \
-    glslang \
-    gcompat \
-    libclc-dev \
-    libdrm-dev \
-    libva-vdpau-driver \
-    libx11 \
-    libx11-dev \
-    libxdamage-dev \
-    libxext-dev \
-    libxfixes-dev \
-    libxml2-dev \
-    libxshmfence-dev \
-    llvm-dev \
-    libxrandr-dev \
-    lua5.3 \
-    spirv-llvm-translator-dev \
+RUN apk --no-cache add \
     mesa-dev \
     mesa-egl \
     mesa-gbm \
@@ -85,35 +55,6 @@ RUN apk add --no-cache \
     mesa-glapi \
     mesa-gles \
     mesa-va-gallium \
-    meson \
-    ninja \
-    wayland-protocols-dev \
-    xorg-server-dev \
-    xz-dev \
-    zlib-dev \
-    libvdpau-dev \
-    py3-cparser \
-    py3-mako \
-    py3-yaml \
-    valgrind \
-    wget \
-    wayland-dev \
-    xrandr
+    mesa
 
-# RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
-#     wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && \
-#     apk add glibc-2.28-r0.apk
-
-# Install libglvnd
-RUN cd /tmp/libglvnd && \
-    meson builddir --prefix=/usr && \
-    ninja -C builddir/ install && \
-    rm -rf /tmp/libglvnd
-
-# Install Mesa
-RUN cd /tmp/mesa && \
-    meson setup builddir/ --prefix=/usr && \
-    ninja -C builddir/ && \
-    ninja -C builddir/ install && \
-    cd / && \
-    rm -rf /tmp/mesa
+RUN if [[ "$BUILDPLATFORM" == "amd64" ]];then RUN apk --no-cache add mesa-vulkan-intel ; else echo "This build is not compatible with 'mesa-vulkan-intel'" ; fi
