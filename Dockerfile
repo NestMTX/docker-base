@@ -42,7 +42,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
     make
 
 ##################################################
-# Install Mesa
+# Install Mesa with VDPAU support
 ##################################################
 FROM base AS mesa
 
@@ -51,6 +51,7 @@ RUN apk add --no-cache \
     cmake \
     git \
     glib-dev \
+    glslang \
     libdrm-dev \
     libva-vdpau-driver \
     libx11 \
@@ -73,14 +74,17 @@ RUN apk add --no-cache \
     wayland-protocols-dev \
     xorg-server-dev \
     xz-dev \
-    zlib-dev
+    zlib-dev \
+    libvdpau-dev
 
+# Install libglvnd
 RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
     cd /tmp/libglvnd && \
     meson builddir --prefix=/usr && \
     ninja -C builddir/ install && \
     rm -rf /tmp/libglvnd
 
+# Install Mesa
 RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git /tmp/mesa && \
     cd /tmp/mesa && \
     meson setup builddir/ --prefix=/usr && \
