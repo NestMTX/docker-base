@@ -52,6 +52,7 @@ RUN apk add --no-cache \
     git \
     glib-dev \
     glslang \
+    libclc-dev \
     libdrm-dev \
     libva-vdpau-driver \
     libx11 \
