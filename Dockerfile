@@ -33,6 +33,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
     gst-libav \
     build-base \
     python3 \
+    py3-pip \
     pkgconfig \
     cairo-dev \
     pango-dev \
@@ -46,6 +47,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
 ##################################################
 FROM base AS mesa
 
+# Install additional dependencies including the Python mako module
 RUN apk add --no-cache \
     clang-dev \
     cmake \
@@ -77,6 +79,9 @@ RUN apk add --no-cache \
     xz-dev \
     zlib-dev \
     libvdpau-dev
+
+# Install Python mako module
+RUN pip install mako
 
 # Install libglvnd
 RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd && \
